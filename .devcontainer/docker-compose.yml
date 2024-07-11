@@ -16,11 +16,11 @@ services:
     volumes:
       - ..:/app
 
-  dashboard:
-    image: ghcr.io/saleor/saleor-dashboard:3.15.2
-    restart: unless-stopped
-    ports:
-      - 9000:80
+  # dashboard:
+  #   image: ghcr.io/saleor/saleor-dashboard:3.15.2
+  #   restart: unless-stopped
+  #   ports:
+  #     - 9000:80
 
   db:
     image: library/postgres:15-alpine

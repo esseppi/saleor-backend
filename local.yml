@@ -1,0 +1,67 @@
+version: '3'
+
+volumes:
+  local_esseppi_data: {}
+  local_esseppi_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: esseppi_local_django
+    depends_on:
+      - postgres
+      - redis
+      - mailhog
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: esseppi_local_postgres
+    volumes:
+      - local_esseppi_data:/var/lib/postgresql/data
+      - local_esseppi_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:6
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    container_name: esseppi_local_mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  celeryworker:
+    <<: *django
+    image: esseppi_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+      - mailhog
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: esseppi_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+      - mailhog
+    ports: []
+    command: /start-celerybeat
