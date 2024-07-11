@@ -7,7 +7,7 @@ fi
 git fetch -a
 git checkout origin/main
 
-gcloud secrets versions access latest --secret=esseppi-api-dev-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > /var/www/esseppi-backend/.envs/.production/.django
+# gcloud secrets versions access latest --secret=esseppi-api-dev-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > /var/www/esseppi-backend/.envs/.production/.django
 
 export DJANGO_SETTINGS_MODULE=saleor.settings
 
