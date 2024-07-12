@@ -1,22 +1,22 @@
 version: '3'
 
 volumes:
-  dev_soflow_data: {}
-  dev_soflow_data_backups: {}
+  dev_saleor_data: {}
+  dev_saleor_data_backups: {}
 
 services:
   django: &django
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: soflow_dev_django
+    image: saleor_dev_django
     depends_on:
       - redis
     env_file:
       - ./.envs/.production/.django
     environment:
       DJANGO_SETTINGS_MODULE: saleor.settings
-      GOOGLE_SECRETS_NAME: soflow-api-dev-env
+      GOOGLE_SECRETS_NAME: saleor-api-dev-env
     ports:
       - "8000:8000"
     command: /start
@@ -27,14 +27,14 @@ services:
 
   celeryworker:
     <<: *django
-    image: soflow_dev_celeryworker
+    image: saleor_dev_celeryworker
     container_name: celeryworker
     ports: []
     command: /start-celeryworker
 
   celerybeat:
     <<: *django
-    image: soflow_dev_celerybeat
+    image: saleor_dev_celerybeat
     container_name: celerybeat
     ports: []
     command: /start-celerybeat
